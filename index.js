@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 let persons = [
   {
     id: 1,
@@ -45,6 +47,24 @@ app.get("/api/persons/:id", (request, response) => {
   } else {
     response.status(404).end();
   }
+});
+
+app.post("/api/persons/", (request, response) => {
+  const id = Math.floor(Math.random() * 1000);
+  const person = request.body;
+  console.log(person);
+
+  if (Object.keys(person).length < 1) {
+    return response.status(400).json({
+      error: "content missing",
+    });
+  }
+
+  person.id = id;
+  persons.push(person);
+
+  console.log(persons);
+  response.json(person);
 });
 
 app.delete("/api/persons/:id", (request, response) => {
