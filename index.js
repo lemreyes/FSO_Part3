@@ -54,9 +54,27 @@ app.post("/api/persons/", (request, response) => {
   const person = request.body;
   console.log(person);
 
+  // check if object is empty
   if (Object.keys(person).length < 1) {
     return response.status(400).json({
       error: "content missing",
+    });
+  }
+
+  // name and number must be in object
+  if (!("name" in person) || !("number" in person)) {
+    return response.status(400).json({
+      error: "content missing",
+    });
+  }
+
+  // check if duplicate name
+  if (
+    persons.filter((person_in_array) => person.name === person_in_array.name)
+      .length > 0
+  ) {
+    return response.status(400).json({
+      error: "Must be unique",
     });
   }
 

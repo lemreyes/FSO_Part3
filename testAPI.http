@@ -13,3 +13,17 @@ content-type: application/json
 }
 ###
 POST http://localhost:3001/api/persons/ 
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "name": "Lemuel1"
+}
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "number": "124455464"
+}
