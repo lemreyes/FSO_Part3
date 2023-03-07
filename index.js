@@ -41,10 +41,10 @@ let persons = [
 ];
 
 app.get("/api/persons", (request, response) => {
+  console.log("entering /api/persons");
+  console.log("Person", Person);
   Person.find({}).then((result) => {
-    result.forEach((person) => {
-      console.log(person);
-    });
+    response.send(result)
   });
 });
 

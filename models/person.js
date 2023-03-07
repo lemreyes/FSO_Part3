@@ -9,6 +9,7 @@ console.log("connecting to", url);
 mongoose
   .connect(url)
   .then((result) => {
+    console.log("connect result", result);
     console.log("connected to MongoDB");
   })
   .catch((error) => {
@@ -28,6 +29,5 @@ personSchema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
-
 
 module.exports = mongoose.model("Person", personSchema);
