@@ -44,7 +44,7 @@ app.get("/api/persons", (request, response) => {
   console.log("entering /api/persons");
   console.log("Person", Person);
   Person.find({}).then((result) => {
-    response.send(result)
+    response.send(result);
   });
 });
 
@@ -87,19 +87,28 @@ app.post("/api/persons/", (request, response) => {
   }
 
   // check if duplicate name
+  /*
   if (
-    persons.filter((person_in_array) => person.name === person_in_array.name)
+    Person.filter((person_in_array) => person.name === person_in_array.name)
       .length > 0
   ) {
     return response.status(400).json({
       error: "Must be unique",
     });
   }
+  */
 
   person.id = id;
-  persons.push(person);
+  //persons.push(person);
+  const new_person = new Person({
+    name: person.name,
+    number: person.number,
+  });
 
-  console.log(persons);
+  new_person.save().then((result) => {
+    console.log("new person saved!");
+  });
+
   response.json(person);
 });
 
