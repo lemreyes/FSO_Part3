@@ -17,14 +17,18 @@ app.use(morgan(":method :url :status :response-time :req[header] :log_obj"));
 
 const Person = require("./models/person");
 
-app.get("/api/persons", (request, response) => {
+// get all persons
+app.get("/api/persons", (request, response, next) => {
   console.log("entering /api/persons");
   console.log("Person", Person);
-  Person.find({}).then((result) => {
-    response.send(result);
-  });
+  Person.find({})
+    .then((result) => {
+      response.send(result);
+    })
+    .catch((error) => next(error));
 });
 
+// get info
 app.get("/api/info", (request, response) => {
   const dateTime = new Date();
   console.log("date time", dateTime);
@@ -33,18 +37,21 @@ app.get("/api/info", (request, response) => {
     <p>${dateTime}</p>`);
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-  console.log("person", person);
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+app.get("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  const person = Person.findById(id)
+    .then((response) => {
+      console.log("person", person);
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.post("/api/persons/", (request, response) => {
+app.post("/api/persons/", (request, response, next) => {
   const id = Math.floor(Math.random() * 1000);
   const person = request.body;
   console.log(person);
@@ -83,16 +90,17 @@ app.post("/api/persons/", (request, response) => {
     number: person.number,
   });
 
-  new_person.save().then((result) => {
-    console.log("new person saved!");
-  });
+  new_person
+    .save()
+    .then((result) => {
+      console.log("new person saved!");
+    })
+    .catch((error) => next(error));
 
   response.json(person);
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  //const id = Number(request.params.id);
-  //console.log("id: ", id);
+app.delete("/api/persons/:id", (request, response, next) => {
 
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
