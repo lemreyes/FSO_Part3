@@ -9,8 +9,8 @@ content-type: application/json
 
 {
     "id": 1,
-    "name": "Lem",
-    "number": 11234323
+    "name": "Lemuel2",
+    "number": 112454399
 }
 ###
 POST http://localhost:3001/api/persons/ 

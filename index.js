@@ -56,34 +56,35 @@ app.post("/api/persons/", (request, response, next) => {
   const person = request.body;
   console.log(person);
 
-  // check if object is empty
-  if (Object.keys(person).length < 1) {
-    return response.status(400).json({
-      error: "content missing",
-    });
-  }
+  try {
+    // check if object is empty
+    if (Object.keys(person).length < 1) {
+      throw new Error("Content missing");
+    }
 
-  // name and number must be in object
-  if (!("name" in person) || !("number" in person)) {
-    return response.status(400).json({
-      error: "content missing",
-    });
+    // name and number must be in object
+    if (!("name" in person) || !("number" in person)) {
+      throw new Error("Content missing");
+    }
+  } catch (error) {
+    return next(error);
   }
 
   // check if duplicate name
-  /*
-  if (
-    Person.filter((person_in_array) => person.name === person_in_array.name)
-      .length > 0
-  ) {
-    return response.status(400).json({
-      error: "Must be unique",
+  Person.findOne({ name: person.name })
+    .then((result) => {
+      console.log("findOne result: ", result);
+      if (result) {
+        throw new Error("Must be unique");
+      } else {
+        console.log("Not duplicate, can proceed");
+      }
+    })
+    .catch((error) => {
+      return next(error);
     });
-  }
-  */
 
   person.id = id;
-  //persons.push(person);
   const new_person = new Person({
     id: person.id,
     name: person.name,
@@ -93,15 +94,13 @@ app.post("/api/persons/", (request, response, next) => {
   new_person
     .save()
     .then((result) => {
-      console.log("new person saved!");
+      console.log("new person saved!", result);
+      response.json(result);
     })
     .catch((error) => next(error));
-
-  response.json(person);
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
-
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
       response.status(204).end();
@@ -118,7 +117,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
+  console.log(error.message);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
