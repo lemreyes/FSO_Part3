@@ -39,11 +39,11 @@ app.get("/api/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  const person = Person.findById(id)
-    .then((response) => {
-      console.log("person", person);
-      if (person) {
-        response.json(person);
+  Person.findById(id)
+    .then((result) => {
+      console.log("Response: ", result);
+      if (result) {
+        response.json(result);
       } else {
         response.status(404).end();
       }
