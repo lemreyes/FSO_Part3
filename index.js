@@ -52,9 +52,9 @@ app.get("/api/persons/:id", (request, response, next) => {
 });
 
 app.post("/api/persons/", (request, response, next) => {
-  const id = Math.floor(Math.random() * 1000);
   const person = request.body;
-  console.log(person);
+  console.log("POST: /api/persons/");
+  console.log("request.body", person);
 
   try {
     // check if object is empty
@@ -67,10 +67,13 @@ app.post("/api/persons/", (request, response, next) => {
       throw new Error("Content missing");
     }
   } catch (error) {
+    console.log("catch error Content missing");
     return next(error);
   }
 
   // check if duplicate name
+  console.log("findOne");
+  console.log("name", person.name);
   Person.findOne({ name: person.name })
     .then((result) => {
       console.log("findOne result: ", result);
@@ -80,24 +83,26 @@ app.post("/api/persons/", (request, response, next) => {
         console.log("Not duplicate, can proceed");
       }
     })
+    .then(() => {
+      console.log("create new person object");
+      const new_person = new Person({
+        name: person.name,
+        number: person.number,
+      });
+
+      console.log("save new person object into DB");
+      new_person
+        .save()
+        .then((result) => {
+          console.log("new person saved!", result);
+          response.json(result);
+        })
+        .catch((error) => next(error));
+    })
     .catch((error) => {
+      console.log("Catch findOne");
       return next(error);
     });
-
-  person.id = id;
-  const new_person = new Person({
-    id: person.id,
-    name: person.name,
-    number: person.number,
-  });
-
-  new_person
-    .save()
-    .then((result) => {
-      console.log("new person saved!", result);
-      response.json(result);
-    })
-    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
@@ -117,13 +122,17 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error.message);
+  console.log("Error handler: ", error);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.message === "Content missing") {
+    return response.status(400).send({ error: "content missing" });
+  } else if (error.message === "Must be unique") {
+    return response.status(400).send({ error: "Must be unique" });
+  } else {
+    next(error);
   }
-
-  next(error);
 };
 
 // this has to be the last loaded middleware.
