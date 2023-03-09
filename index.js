@@ -74,30 +74,30 @@ app.post("/api/persons/", (request, response, next) => {
   // check if duplicate name
   console.log("findOne");
   console.log("name", person.name);
-  Person.findOne({ name: person.name })
+  Person.findOneAndUpdate({ name: person.name }, person)
     .then((result) => {
       console.log("findOne result: ", result);
       if (result) {
-        throw new Error("Must be unique");
+        // return the result of update
+        console.log("performed the Update", result);
+        return response.json(result);
       } else {
         console.log("Not duplicate, can proceed");
-      }
-    })
-    .then(() => {
-      console.log("create new person object");
-      const new_person = new Person({
-        name: person.name,
-        number: person.number,
-      });
+        console.log("create new person object");
+        const new_person = new Person({
+          name: person.name,
+          number: person.number,
+        });
 
-      console.log("save new person object into DB");
-      new_person
-        .save()
-        .then((result) => {
-          console.log("new person saved!", result);
-          response.json(result);
-        })
-        .catch((error) => next(error));
+        console.log("save new person object into DB");
+        new_person
+          .save()
+          .then((result) => {
+            console.log("new person saved!", result);
+            response.json(result);
+          })
+          .catch((error) => next(error));
+      }
     })
     .catch((error) => {
       console.log("Catch findOne");

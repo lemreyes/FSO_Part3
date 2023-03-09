@@ -8,9 +8,8 @@ POST http://localhost:3001/api/persons/ HTTP/1.1/
 content-type: application/json
 
 {
-    "id": 1,
     "name": "Lemuel3",
-    "number": 112454399
+    "number": 112454777
 }
 ###
 POST http://localhost:3001/api/persons/ 
