@@ -120,7 +120,9 @@ app.put("/api/persons/:id", (request, response, next) => {
       console.log("findbyIDandUpdate result: ", result);
       return response.json(result);
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      return next(error);
+    });
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
@@ -141,6 +143,8 @@ app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
   console.log("Error handler: ", error);
+  console.log("error name: ", error.name);
+  console.log("error message: ", error.message);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
@@ -148,6 +152,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: "content missing" });
   } else if (error.message === "Must be unique") {
     return response.status(400).send({ error: "Must be unique" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).send({ error: error.message });
   } else {
     next(error);
   }
