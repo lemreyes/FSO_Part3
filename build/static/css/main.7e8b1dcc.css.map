@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/main.7e8b1dcc.css","mappings":"AAAA,oCAGI,wBAA2B,CAF3B,WAAY,CACZ,cAAe,CAEf,YACJ","sources":["components/Notification.module.css"],"sourcesContent":[".successMessage {\r\n    color: green;\r\n    font-size: 1rem;\r\n    border: 2px solid darkgreen;\r\n    padding: 1rem;\r\n}"],"names":[],"sourceRoot":""}
