@@ -105,6 +105,24 @@ app.post("/api/persons/", (request, response, next) => {
     });
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  const name = request.params.name;
+  const number = request.params.number;
+
+  console.log("PUT /api/persons", {});
+  console.log("ID: ", id);
+  console.log("name: ", name);
+  console.log("number: ", number);
+
+  Person.findByIdAndUpdate(id, { name: name, number: number })
+    .then((result) => {
+      console.log("findbyIDandUpdate result: ", result);
+      return response.json(result);
+    })
+    .catch((error) => next(error));
+});
+
 app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
