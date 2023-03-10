@@ -27,3 +27,34 @@ content-type: application/json
 {
     "number": "124455464"
 }
+### number validation test1
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "name": "ergdfad1",
+    "number": "234-1234567"
+}
+### number validation test2
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "name": "ergdfad2",
+    "number": "23-1234567"
+}
+### number validation test3
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "name": "ergdfad3",
+    "number": "23567"
+}
+### number validation test4
+POST http://localhost:3001/api/persons/ HTTP/1.1/
+content-type: application/json
+
+{
+    "name": "ergdfad4",
+}
